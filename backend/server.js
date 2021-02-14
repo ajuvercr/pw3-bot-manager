@@ -90,6 +90,7 @@ async function setup_crud(app, url, file, state, validator) {
     app.delete(url+'/:id', (req, res) => {
         const id = req.params.id;
         const data = state.inner.data[id];
+        console.log(state.inner.data, id, data);
 
         if (!data) {
             res.status(404);
