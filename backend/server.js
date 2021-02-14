@@ -84,7 +84,7 @@ async function setup_crud(app, url, file, state, validator) {
         state.inner.data[id] = data;
 
         save_file(file, state.inner).then(() => console.log("saved " + file));
-        res.json({"id": id});
+        res.json(data);
     });
 
     app.delete(url+'/:id', (req, res) => {
