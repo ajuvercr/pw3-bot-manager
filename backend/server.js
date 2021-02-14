@@ -1,5 +1,6 @@
 const express = require('express')
 const fs = require('fs');
+const validate = require('./validation');
 
 const app = express();
 const port = 8888;
@@ -19,17 +20,15 @@ const state = {
     }
 };
 
-async function init() {
-    state.bots = JSON.parse(await load_or_save_default('./store/bots.json', state.bots));
-    state.lobbies = JSON.parse(await load_or_save_default('./store/lobbies.json', state.lobbies));
-}
+const botValidator = {
+    "arguments": validate.validate_array(validate.validate_string()),
+    "name": validate.validate_string(),
+    "id": validate.validate_number(),
+};
 
-function wrap_async(task, res, status=400) {
-    task.then(d => res.send(d)).catch(err => {
-        res.status(status);
-        res.send(err);
-    });
-}
+const lobbyValidator = {
+
+};
 
 async function load_or_save_default(file, def={}) {
     return await load_file(file)
@@ -52,8 +51,19 @@ function load_file(file) {
 }
 
 app.use(express.json());
-async function setup_crud(app, url, file, state) {
+async function setup_crud(app, url, file, state, validator) {
     state.inner = JSON.parse(await load_or_save_default(file, state.inner));
+
+    const errors = [];
+    for (let field in state.inner.data) {
+        validate(state.inner.data[field], validator, '['+field+']', errors);
+    }
+    if(errors.length > 0) {
+        console.error(`Could not setup crud for '${url}', validation failed`)
+        console.error(state.inner)
+        console.error(errors);
+        process.exit(2);
+    }
 
     app.get(url, (req, res) => {
         res.json(state.inner.data);
@@ -62,14 +72,20 @@ async function setup_crud(app, url, file, state) {
     app.post(url, async (req, res) => {
         const id = state.inner.length ++;
         const data = req.body;
+        data["id"] = id; // Just overwrite
 
-        data["id"] = id;
+        const errors = validate(data, validator);
+        if(errors.length > 0) {
+            res.status(400);
+            res.send(errors);
+            return;
+        }
+
         state.inner.data[id] = data;
 
         save_file(file, state.inner).then(() => console.log("saved " + file));
         res.json({"id": id});
     });
-
 
     app.delete(url+'/:id', (req, res) => {
         const id = req.params.id;
@@ -94,8 +110,8 @@ app.get("/", (req, res) => {
 });
 
 (async function() {
-    await setup_crud(app, '/bots', 'store/bots.json', state.bots);
-    await setup_crud(app, '/lobbies', 'store/lobbies.json', state.lobbies);
+    await setup_crud(app, '/bots', 'store/bots.json', state.bots, botValidator);
+    await setup_crud(app, '/lobbies', 'store/lobbies.json', state.lobbies, lobbyValidator);
     app.listen(port, () => {
         console.log(`>> Bot manager backend launched at port ${port}!`)
     });
