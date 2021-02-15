@@ -1,18 +1,20 @@
 <template>
-    <h3>Bots</h3>
-    <ul class="list-bots">
-        <li class="bot" v-for="bot in bots" v-bind:key=bot.id>
-            <p class="name">
-                <div class="delButton">
-                    <fa-icon v-on:click="deleteBot(bot.id)" icon="times" class="status-icon"/>
-                </div>
-                {{bot.name}}
-            </p>
-            <p> Arguments: <span class="command">{{ botArgs(bot) }}</span></p>
-        </li>
-    </ul>
+    <div>
+        <h3>Bots</h3>
+        <ul class="list-bots">
+            <li class="bot" v-for="bot in bots" v-bind:key=bot.id>
+                <p class="name">
+                    <div class="delButton">
+                        <fa-icon v-on:click="deleteBot(bot.id)" icon="times" class="status-icon"/>
+                    </div>
+                    {{bot.name}}
+                </p>
+                <p> Arguments: <span class="command">{{ botArgs(bot) }}</span></p>
+            </li>
+        </ul>
 
-    <BotsCreate />
+        <BotsCreate />
+    </div>
 </template>
 
 <style scoped>
@@ -54,7 +56,7 @@ ul {
 <script lang="ts">
 import axios from "redaxios";
 import BotsCreate from './bots/Create.vue'
-import { Bot } from '../store/bot'
+import { Bot, BotState } from '../store'
 
 export default {
     name: "Bots",
@@ -65,8 +67,8 @@ export default {
         }
     },
     computed: {
-        bots(): {[id: number]: Bot} {
-            return this.$store.state.bots.inner;
+        bots(): BotState {
+            return this.$store.state.bots;
         }
     },
     methods: {

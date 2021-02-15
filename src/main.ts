@@ -9,7 +9,6 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 library.add(faTimes);
-
 const app = createApp(App).use(router).use(store);
 app.component('fa-icon', FontAwesomeIcon);
 app.mount('#app');
