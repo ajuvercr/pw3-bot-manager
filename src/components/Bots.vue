@@ -1,16 +1,16 @@
 <template>
     <h3>Bots</h3>
-    <li class="list-bots" v-for="bot in bots" v-bind:key=bot.id>
-        <div class="bot">
-            <div class="name">
+    <ul class="list-bots">
+        <li class="bot" v-for="bot in bots" v-bind:key=bot.id>
+            <p class="name">
                 <div class="delButton">
                     <fa-icon v-on:click="deleteBot(bot.id)" icon="times" class="status-icon"/>
                 </div>
                 {{bot.name}}
-            </div>
-            <p> Arguments: <span class="command">{{ bot.arguments.join(" ") }}</span></p>
-        </div>
-    </li>
+            </p>
+            <p> Arguments: <span class="command">{{ botArgs(bot) }}</span></p>
+        </li>
+    </ul>
 
     <BotsCreate />
 </template>
@@ -19,6 +19,9 @@
 h3 {
     padding-left: 10px;
 }
+ul {
+    list-style-type: none;
+}
 .status-icon {
   width: 1em;
 }
@@ -26,7 +29,7 @@ h3 {
     padding-left: 40px;
 }
 .bot + .bot {
-    padding-top: 20px;
+    padding-top: 15px;
 }
 .bot .name {
     position: relative;
@@ -36,6 +39,11 @@ h3 {
     top: 50%;
     left: -1.1em;
     transform: translateY(-50%);
+}
+
+.bot .name .delButton :hover {
+    color: orange;
+    cursor: pointer;
 }
 
 .bot .command {
@@ -62,6 +70,11 @@ export default {
         }
     },
     methods: {
+        botArgs(bot: Bot) {
+            // Surround part with quotes if it contains spaces
+            const maybeQuote = (part: string) => part.indexOf(" ") >= 0 ? `'${part}'` : part;
+            return bot.arguments.map(maybeQuote).join(" ");
+        },
         deleteBot(id: number) {
             // Some debouncing required, don't really know why
             if (this.deleted.has(id)) return;
