@@ -22,6 +22,7 @@
 
 <script lang="ts">
 import axios from "redaxios";
+import errorHandler from "../../error";
 
 export default {
     name: 'BotsCreate',
@@ -48,12 +49,11 @@ export default {
 
             axios.post(`/api/bots`, data).then((response) => {
                 // Update bots
-                console.log("Creat bot", response.data);
                 this.$store.commit('addBot', response.data);
 
                 this.args = "";
                 this.name = "";
-            });
+            }).catch(errorHandler);
         },
         buttonDisabled() {
             const nameValid = this.name.length > 0;

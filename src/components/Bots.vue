@@ -68,6 +68,7 @@ export default {
     },
     computed: {
         bots(): BotState {
+            console.log("Runnning computed bots")
             return this.$store.state.bots;
         }
     },

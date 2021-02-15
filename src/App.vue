@@ -35,7 +35,6 @@ export default {
     axios.post("/api/bots", {name: "test"}).catch(errorHandler);
 
     const response = await axios.get(`/api/bots`);
-    console.log(response);
     this.$store.commit('setBots', response.data);
   }
 }

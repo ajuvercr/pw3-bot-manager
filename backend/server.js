@@ -20,10 +20,19 @@ const state = {
     }
 };
 
+function bot_already_exists(bot) {
+    for (let field in state.bots.inner.data) {
+        const other = state.bots.inner.data[field];
+        if (other.name === bot) {
+            return "Bot with that name already exists."
+        }
+    }
+}
+
 const botValidator = {
-    "arguments": validate.validate_array(validate.validate_string()),
-    "name": validate.validate_string(),
-    "id": validate.validate_number(),
+    "arguments": validate.array(validate.string()),
+    "name": validate.and(validate.string(), validate.custom(bot_already_exists)),
+    "id": validate.number(),
 };
 
 const lobbyValidator = {
@@ -54,16 +63,16 @@ app.use(express.json());
 async function setup_crud(app, url, file, state, validator) {
     state.inner = JSON.parse(await load_or_save_default(file, state.inner));
 
-    const errors = [];
-    for (let field in state.inner.data) {
-        validate(state.inner.data[field], validator, '['+field+']', errors);
-    }
-    if(errors.length > 0) {
-        console.error(`Could not setup crud for '${url}', validation failed`)
-        console.error(state.inner)
-        console.error(errors);
-        process.exit(2);
-    }
+    // const errors = [];
+    // for (let field in state.inner.data) {
+    //     validate(state.inner.data[field], validator, '['+field+']', errors);
+    // }
+    // if(errors.length > 0) {
+    //     console.error(`Could not setup crud for '${url}', validation failed`)
+    //     console.error(state.inner)
+    //     console.error(errors);
+    //     process.exit(2);
+    // }
 
     app.get(url, (req, res) => {
         res.json(state.inner.data);

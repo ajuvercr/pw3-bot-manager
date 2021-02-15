@@ -9,7 +9,7 @@ function isArray(obj) {
     return typeof(obj) === 'object' && Array.isArray(obj)
 }
 
-function validate_some(validator, obj, path, acum) {
+function some(validator, obj, path, acum) {
     if (typeof validator === 'function') {
         return validator(obj, path, acum);
     } else {
@@ -31,7 +31,7 @@ function validate(obj, validator, path="", acum=[]) {
         if(!obj.hasOwnProperty(field)) {
             acum.push(`Required field '${new_path}'`);
         } else {
-            validate_some(field_validator, obj[field], new_path, acum)
+            some(field_validator, obj[field], new_path, acum)
         }
     }
 
@@ -39,21 +39,38 @@ function validate(obj, validator, path="", acum=[]) {
 }
 module.exports = validate
 
-module.exports.validate_string = function() {
+module.exports.string = function() {
     return (obj, path, acum) => (typeof obj === "string") || acum.push(`'${path}' should be a string`);
 }
 
-module.exports.validate_number = function() {
+module.exports.number = function() {
     return (obj, path, acum) => (typeof obj === "number") || acum.push(`'${path}' should be a number`);
 }
 
-module.exports.validate_array = function(validator) {
+module.exports.array = function(validator) {
     return (obj, path, acum) => {
         if(!isArray(obj))
             return acum.push(`'${path}' should be an array`);
         for(let i in obj) {
             const new_path = `${path}[${i}]`
-            validate_some(validator, obj[i], new_path, acum);
+            some(validator, obj[i], new_path, acum);
+        }
+        return acum;
+    };
+}
+
+module.exports.custom = function(f) {
+    return (obj, path, acum) => {
+        const out = f(obj);
+        out && acum.push(out);
+        return acum;
+    }
+}
+
+module.exports.and = function(...fs) {
+    return (obj, path, acum) => {
+        for(let f of fs) {
+            some(f, obj, path, acum);
         }
         return acum;
     };
