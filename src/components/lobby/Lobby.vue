@@ -1,10 +1,32 @@
 <template>
     <p class="name">
+        Lobby: {{lobby?.token}}
         <div class="delButton">
             <fa-icon v-on:click="deleteLobby()" icon="times" class="status-icon"/>
         </div>
-        {{lobby?.token}}
     </p>
+    <ul class="list-instances">
+        <div>
+            <h3>Add bot instance</h3>
+            <select v-model="newinstance.botId">
+                <option value="" disabled>Select your bot</option>
+                <option v-for="bot in bots" v-bind:key=bot.id :value=bot.id>
+                    {{bot.name}}
+                </option>
+            </select>
+            <div>
+                <input type="text" v-model="newinstance.token" placeholder="Bot token" />
+                <button v-on:click="generateToken()">Generate token</button>
+            </div>
+            <button v-on:click="botInstanceCreate" :disabled="buttonDisabled()" class="join-button">
+                Add bot
+            </button>
+        </div>
+        <br>
+        <li class="instances" v-for="instance in lobby.instances" v-bind:key=instance.id>
+            <BotInstance :lobbyId="lobby.id" :bot="instance"/>
+        </li>
+    </ul>
 </template>
 
 <style scoped>
@@ -32,17 +54,43 @@ import axios from "redaxios";
 import LobbyCreate from './Create.vue'
 import { Lobby } from '@/store/lobbies';
 import errorHandler from '../../error';
+import BotInstance from './BotInstance.vue';
+import { BotState } from '@/store/bots';
 
 export default {
     name: "Lobby",
-    components: { LobbyCreate },
+    components: { LobbyCreate, BotInstance },
     props: { lobby: Object as () => Lobby },
+    data() {
+        return {
+            newinstance: {
+                botId: "",
+                token: ""
+            }
+        };
+    },
+    computed: {
+      bots(): BotState {
+          return this.$store.state.bots;
+      }
+    },
     methods: {
         deleteLobby() {
             axios.delete(`/api/lobbies/${this.lobby?.id}`).then((response) => {
                 // Update bots
                 this.$store.commit('removeLobby', this.lobby?.id);
             }).catch(errorHandler);
+        },
+        botInstanceCreate() {
+            console.log("Creating new bot instance")
+        },
+        buttonDisabled() {
+            const validBot = !!this.newinstance.botId;
+            const validToken = !!this.newinstance.token;
+            return !(validBot && validToken);
+        },
+        generateToken() {
+            this.newinstance.token = "some random token";
         }
     }
 }

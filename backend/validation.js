@@ -47,6 +47,10 @@ module.exports.number = function() {
     return (obj, path, acum) => (typeof obj === "number") || acum.push(`'${path}' should be a number`);
 }
 
+module.exports.boolean = function() {
+    return (obj, path, acum) => (typeof obj === "boolean") || acum.push(`'${path}' should be a boolean`);
+}
+
 module.exports.array = function(validator) {
     return (obj, path, acum) => {
         if(!isArray(obj))

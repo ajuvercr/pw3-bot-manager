@@ -1,6 +1,14 @@
 export type Lobby = {
     id: number,
     token: string,
+    instances: BotInstance[],
+}
+
+export type BotInstance = {
+    token: string,
+    botId: number,
+    autoAccept: boolean,
+    startClient: boolean,
 }
 
 export type LobbyState = { [id: number]: Lobby};

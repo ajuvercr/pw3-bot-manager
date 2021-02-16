@@ -35,9 +35,17 @@ const botValidator = {
     "id": validate.number(),
 };
 
+const botInstanceValidator = {
+    token: validate.string(),
+    botId: validate.number(),   // TODO add custom validator to see if bot is valid bot
+    autoAccept: validate.boolean(),
+    startClient: validate.boolean(),
+};
+
 const lobbyValidator = {
     "id": validate.number(),
     "token": validate.and(validate.string(), validate.hex(64)),
+    "instances": validate.array(botInstanceValidator)
 };
 
 async function load_or_save_default(file, def={}) {

@@ -32,7 +32,8 @@ export default {
     methods: {
         create() {
             const data = {
-                token: this.token
+                token: this.token,
+                instances: []
             };
 
             axios.post(`/api/lobbies`, data).then((response) => {

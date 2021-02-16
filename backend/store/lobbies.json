@@ -1,1 +1,1 @@
-{"length":9,"data":{"7":{"token":"b00bb00bb00bb00bb00bb00bb00bb00bb00bb00bb00bb00bb00bb00bb00bb00b","id":7},"8":{"token":"b00bb00bb00bb00bb00bb00bb00bb00bb00bb00bb00bb00bb00bb00bb00bb00c","id":8}}}
+{"length":3,"data":{"0":{"token":"d00db00bb00bb00bb00bb00bb00bb00bb00bb00bb00bb00bb00bb00bb00bb00b","instances":[{"token":"test","botId":7,"autoAccept":true,"startClient":true}],"id":0}}}
