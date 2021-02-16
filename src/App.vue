@@ -1,8 +1,8 @@
 <template>
   <div class="main">
     <div class="content">
-       <Bots/>
-      <Lobby/>
+      <BotPage/>
+      <LobbyPage/>
     </div>
     <Errors/>
   </div>
@@ -17,6 +17,8 @@
 
 .content {
   width: 99%;
+  max-width: 1000px;
+  justify-content: space-between;
   display: flex;
 }
 </style>
@@ -24,13 +26,13 @@
 <script lang="ts">
 import axios from 'redaxios';
 import errorHandler from './error';
-import Bots from './components/bot/Bots.vue';
+import BotPage from './components/bot/BotPage.vue';
 import Errors from './components/Errors.vue';
-import Lobby from './components/lobby/Lobby.vue';
+import LobbyPage from './components/lobby/LobbyPage.vue';
 
 export default {
   name: 'App',
-  components: {Bots, Errors, Lobby},
+  components: {BotPage, Errors, LobbyPage},
   async mounted() {
     // Is this the correct place though?
     axios.get("/api/fakeurl").catch(errorHandler);
