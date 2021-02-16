@@ -1,6 +1,5 @@
 import { createApp } from 'vue'
 import App from './App.vue';
-import router from './router';
 import store from './store';
 import './index.css'
 
@@ -9,6 +8,6 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 library.add(faTimes);
-const app = createApp(App).use(router).use(store);
+const app = createApp(App).use(store);
 app.component('fa-icon', FontAwesomeIcon);
 app.mount('#app');

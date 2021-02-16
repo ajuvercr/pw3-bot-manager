@@ -55,8 +55,8 @@ ul {
 
 <script lang="ts">
 import axios from "redaxios";
-import BotsCreate from './bots/Create.vue'
-import { Bot, BotState } from '../store'
+import BotsCreate from './Create.vue'
+import { Bot, BotState } from '../../store/bots'
 
 export default {
     name: "Bots",

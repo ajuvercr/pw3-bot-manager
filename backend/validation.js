@@ -75,3 +75,13 @@ module.exports.and = function(...fs) {
         return acum;
     };
 }
+
+module.exports.hex = function(count) {
+    const regex = new RegExp(`^([0-9abcdef]){${count}}$`, 'i');
+    return (obj, path, acum) => {
+        if(!regex.test(obj)) {
+            acum.push(`${path} is not hex of length ${count}`);
+        }
+        return acum;
+    };
+}

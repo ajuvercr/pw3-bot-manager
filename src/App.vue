@@ -2,6 +2,7 @@
   <div class="main">
     <div class="content">
        <Bots/>
+      <Lobby/>
     </div>
     <Errors/>
   </div>
@@ -23,19 +24,20 @@
 <script lang="ts">
 import axios from 'redaxios';
 import errorHandler from './error';
-import Bots from './components/Bots.vue';
+import Bots from './components/bot/Bots.vue';
 import Errors from './components/Errors.vue';
+import Lobby from './components/lobby/Lobby.vue';
 
 export default {
   name: 'App',
-  components: {Bots, Errors},
+  components: {Bots, Errors, Lobby},
   async mounted() {
     // Is this the correct place though?
     axios.get("/api/fakeurl").catch(errorHandler);
     axios.post("/api/bots", {name: "test"}).catch(errorHandler);
 
-    const response = await axios.get(`/api/bots`);
-    this.$store.commit('setBots', response.data);
+    axios.get(`/api/bots`).then(resp => this.$store.commit('setBots', resp.data));
+    axios.get(`/api/lobbies`).then(resp => this.$store.commit('setLobbies', resp.data));
   }
 }
 </script>

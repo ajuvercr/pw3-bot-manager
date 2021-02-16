@@ -24,7 +24,7 @@ function bot_already_exists(bot) {
     for (let field in state.bots.inner.data) {
         const other = state.bots.inner.data[field];
         if (other.name === bot) {
-            return "Bot with that name already exists."
+            return `Bot with that name (${bot}) already exists.`
         }
     }
 }
@@ -36,7 +36,8 @@ const botValidator = {
 };
 
 const lobbyValidator = {
-
+    "id": validate.number(),
+    "token": validate.and(validate.string(), validate.hex(64)),
 };
 
 async function load_or_save_default(file, def={}) {
@@ -62,17 +63,6 @@ function load_file(file) {
 app.use(express.json());
 async function setup_crud(app, url, file, state, validator) {
     state.inner = JSON.parse(await load_or_save_default(file, state.inner));
-
-    // const errors = [];
-    // for (let field in state.inner.data) {
-    //     validate(state.inner.data[field], validator, '['+field+']', errors);
-    // }
-    // if(errors.length > 0) {
-    //     console.error(`Could not setup crud for '${url}', validation failed`)
-    //     console.error(state.inner)
-    //     console.error(errors);
-    //     process.exit(2);
-    // }
 
     app.get(url, (req, res) => {
         res.json(state.inner.data);
