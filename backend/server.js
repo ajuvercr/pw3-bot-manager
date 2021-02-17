@@ -97,11 +97,19 @@ function load_file(file) {
 }
 
 app.use(express.json());
-async function setup_crud(app, url, file, state, validator) {
+
+const noop = () => {};
+async function setup_crud(app, url, file, state, validator, hooks={}) {
+    hooks.put = hooks.put || noop;
+    hooks.get = hooks.get || noop;
+    hooks.post = hooks.post || noop;
+    hooks.delete = hooks.delete || noop;
+
     state.inner = JSON.parse(await load_or_save_default(file, state.inner));
 
     app.get(url, (req, res) => {
         res.json(state.inner.data);
+        hooks.get(state, state.inner.data);
     });
 
     app.put(url+'/:id', async (req, res) => {
@@ -117,8 +125,10 @@ async function setup_crud(app, url, file, state, validator) {
 
         Object.assign(state.inner.data[id], data);
 
-        save_file(file, state.inner).then(() => console.log("saved " + file));
+        save_file(file, state.inner);
         res.json(data);
+
+        hooks.put(state, state.inner.data[id]);
     });
 
     app.post(url, async (req, res) => {
@@ -135,14 +145,15 @@ async function setup_crud(app, url, file, state, validator) {
 
         state.inner.data[id] = data;
 
-        save_file(file, state.inner).then(() => console.log("saved " + file));
+        save_file(file, state.inner);
         res.json(data);
+
+        hooks.post(state, state.inner.data[id]);
     });
 
     app.delete(url+'/:id', (req, res) => {
         const id = req.params.id;
         const data = state.inner.data[id];
-        console.log(state.inner.data, id, data);
 
         if (!data) {
             res.status(404);
@@ -152,9 +163,10 @@ async function setup_crud(app, url, file, state, validator) {
 
         delete state.inner.data[id];
 
-        save_file(file, state.inner).then(() => console.log("saved"));
+        save_file(file, state.inner);
 
         res.json(data);
+        hooks.delete(state, data);
     });
 }
 
@@ -162,10 +174,17 @@ app.get("/", (req, res) => {
     res.json(state)
 });
 
+const log_hooks = {
+    "get": (_, d) => console.log('get', d),
+    "put": (_, d) => console.log('put', d),
+    "post": (_, d) => console.log('post', d),
+    "delete": (_, d) => console.log('delete', d),
+};
+
 (async function() {
-    await setup_crud(app, '/bots', 'store/bots.json', state.bots, botValidator);
-    await setup_crud(app, '/lobbies', 'store/lobbies.json', state.lobbies, lobbyValidator);
-    await setup_crud(app, '/players', 'store/players.json', state.players, playerValidator);
+    await setup_crud(app, '/bots', 'store/bots.json', state.bots, botValidator, log_hooks);
+    await setup_crud(app, '/lobbies', 'store/lobbies.json', state.lobbies, lobbyValidator, log_hooks);
+    await setup_crud(app, '/players', 'store/players.json', state.players, playerValidator, log_hooks);
     app.listen(port, () => {
         console.log(`>> Bot manager backend launched at port ${port}!`)
     });

@@ -111,6 +111,8 @@ export default {
 
             axios.post(`/api/players`, data).then((response) => {
                 this.$store.commit('players/add', response.data);
+                this.newinstance.botId = "";
+                this.newinstance.token = "";
             }).catch(errorHandler);
         },
         buttonDisabled() {
