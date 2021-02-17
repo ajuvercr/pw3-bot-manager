@@ -4,7 +4,7 @@
     <h2> Create new bot </h2>
   </div>
   <input class="form-item" type="text" v-model="name" placeholder="Enter bot's name"/>
-  <input class="form-item" type="text" class="connect-input" v-model="args" placeholder="Bot start command" />
+  <input class="form-item" type="text" v-model="args" placeholder="Bot start command" />
   <button class="form-item" v-on:click="create" :disabled="buttonDisabled()">
     Create Bot
   </button>

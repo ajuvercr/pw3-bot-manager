@@ -20,7 +20,7 @@
             <input type="text" v-model="newinstance.token" placeholder="Bot token" />
             <button v-on:click="generateToken()">Generate token</button>
         </div>
-        <button class="form-item" v-on:click="botInstanceCreate" :disabled="buttonDisabled()" class="join-button">
+        <button class="form-item" v-on:click="botInstanceCreate" :disabled="buttonDisabled()">
             Add bot
         </button>
     </div>
@@ -66,6 +66,10 @@ import LobbyCreate from './Create.vue'
 import errorHandler from '../../error';
 import Player from './Player.vue';
 import { State, BotT, LobbyT, PlayerT } from '@/store';
+import { createTokenValidator, createTokenGenerator } from "../../util"
+
+const tokenValidator = createTokenValidator(64);
+const tokenGenerator = createTokenGenerator(64);
 
 export default {
     name: "Lobby",
@@ -111,11 +115,11 @@ export default {
         },
         buttonDisabled() {
             const validBot = !!this.newinstance.botId;
-            const validToken = !!this.newinstance.token;
+            const validToken = tokenValidator(this.newinstance.token);
             return !(validBot && validToken);
         },
         generateToken() {
-            this.newinstance.token = "some random token";
+            this.newinstance.token = tokenGenerator();
         }
     }
 }

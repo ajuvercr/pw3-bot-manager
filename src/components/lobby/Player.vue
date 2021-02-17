@@ -58,6 +58,11 @@ export default {
         },
         save() {
             console.log("Saving")
+
+            axios.put(`/api/players/${this.player?.id}`, this.player).then((response) => {
+                // Update bots
+                this.$store.commit('players/update', response.data);
+            }).catch(errorHandler);
         },
         deletePlayer() {
             axios.delete(`/api/players/${this.player?.id}`).then((response) => {

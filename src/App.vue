@@ -4,8 +4,8 @@
       <BotPage/>
       <LobbyPage/>
     </div>
-    <Errors/>
   </div>
+  <Errors/>
 </template>
 
 <style>
@@ -120,14 +120,29 @@ ul {
 }
 
 button {
+  color: #ddd;
   width        : 150px;
   padding      : 5px;
   font         : bold .8em sans-serif;
-  border       : 2px solid #333;
+  border: 1px solid #333;
   border-radius: 5px;
   background   : none;
   cursor       : pointer;
-  transform    : rotate(-1.2deg);
+  background-color: #333;
+  /* transform    : rotate(-1.2deg); */
+}
+
+button:hover {
+    background-color: orange;
+    color: black;
+}
+
+button:disabled,
+button[disabled]{
+  border: 1px solid #333;
+  background-color: #cccccc;
+  color: #666666;
+  cursor: unset;
 }
 
 .small button {

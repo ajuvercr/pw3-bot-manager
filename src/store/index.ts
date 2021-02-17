@@ -20,6 +20,7 @@ export function moduleFactory<T extends WithId>(): Module<State<T>, RootState> {
                 delete state[index];
             },
             update(state: State<T>, el: WithId) {
+                console.log("setting", state[el.id], el);
                 Object.assign(state[el.id], el);
             }
         }

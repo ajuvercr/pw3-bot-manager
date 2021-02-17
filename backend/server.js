@@ -35,6 +35,27 @@ function bot_already_exists(bot) {
     }
 }
 
+function bot_does_not_exist(bot) {
+    for (let field in state.bots.inner.data) {
+        const other = state.bots.inner.data[field];
+        if (other.id === bot) {
+            return;
+        }
+    }
+    return `Bot does not exist.`
+}
+
+function lobby_does_not_exist(lobby) {
+    for (let field in state.lobbies.inner.data) {
+        const other = state.lobbies.inner.data[field];
+        if (other.id === lobby) {
+            return;
+        }
+    }
+    return `Lobby does not exist.`
+}
+
+
 const botValidator = {
     "arguments": validate.array(validate.string()),
     "name": validate.and(validate.string(), validate.custom(bot_already_exists)),
@@ -42,9 +63,9 @@ const botValidator = {
 };
 
 const playerValidator = {
-    "token": validate.string(),
-    "botId": validate.number(),   // TODO add custom validator to see if bot is valid bot
-    "lobbyId": validate.number(),
+    "token": validate.and(validate.string(), validate.hex(64)),
+    "botId": validate.and(validate.number(), validate.custom(bot_does_not_exist)),
+    "lobbyId": validate.and(validate.number(), validate.custom(lobby_does_not_exist)),
     "autoAccept": validate.boolean(),
     "startClient": validate.boolean(),
     "id": validate.number()
@@ -52,7 +73,7 @@ const playerValidator = {
 
 const lobbyValidator = {
     "id": validate.number(),
-    "token": validate.and(validate.string(), validate.hex(64))
+    "token": validate.and(validate.string(), validate.hex(32))
 };
 
 async function load_or_save_default(file, def={}) {
@@ -81,6 +102,23 @@ async function setup_crud(app, url, file, state, validator) {
 
     app.get(url, (req, res) => {
         res.json(state.inner.data);
+    });
+
+    app.put(url+'/:id', async (req, res) => {
+        const id = req.params.id;
+        const data = req.body;
+
+        const errors = validate(data, validator);
+        if(errors.length > 0) {
+            res.status(400);
+            res.send(errors);
+            return;
+        }
+
+        Object.assign(state.inner.data[id], data);
+
+        save_file(file, state.inner).then(() => console.log("saved " + file));
+        res.json(data);
     });
 
     app.post(url, async (req, res) => {

@@ -14,8 +14,8 @@
 <style scoped>
 .wrapper {
     position: absolute;
-    bottom: 0;
-    right: 0;
+    bottom: 20px;
+    right: 30px;
 }
 ul {
     list-style-type: none;

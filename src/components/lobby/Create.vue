@@ -17,7 +17,9 @@
 <script lang="ts">
 import axios from "redaxios";
 import errorHandler from "../../error";
-const regex = new RegExp(`^([0-9abcdef]){${64}}$`, 'i');
+import { createTokenValidator } from "../../util"
+
+const tokenValidator = createTokenValidator(32);
 
 export default {
     name: 'LobbyCreate',
@@ -42,7 +44,7 @@ export default {
         },
 
         buttonDisabled() {
-            const lobbyIdValid = regex.test(this.token);
+            const lobbyIdValid = tokenValidator(this.token);
             return !(lobbyIdValid);
         }
     }
