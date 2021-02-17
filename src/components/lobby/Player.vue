@@ -1,15 +1,15 @@
 <template>
     <div>
-        Bot: "{{bots[bot.botId+'']?.name}}"
+        Bot: "{{bots[player.botId+'']?.name}}"
         <div>
             <label for="startbox">Start client</label>
-            <input type="checkbox" id="startbox" v-model="bot.startClient">
+            <input type="checkbox" id="startbox" v-model="player.startClient">
         </div>
         <div>
             <label for="autoacceptbox">Auto Accept</label>
-            <input type="checkbox" id="autoacceptbox" v-model="bot.autoAccept">
+            <input type="checkbox" id="autoacceptbox" v-model="player.autoAccept">
         </div>
-        <div> Token: "{{bot.token}}" </div>
+        <div> Token: "{{player.token}}" </div>
         <button v-on:click="save()">Save</button>
     </div>
 </template>
@@ -40,18 +40,17 @@
 
 <script lang="ts">
 import axios from "redaxios";
-import { BotState } from '../../store/bots'
+import { State, BotT, PlayerT } from '@/store'
 import errorHandler from '../../error';
-import { BotInstance } from '@/store/lobbies';
 
 export default {
-    name: "BotInstance",
+    name: "Player",
     props: {
-        bot: Object as () => BotInstance,
+        player: Object as () => PlayerT,
         lobbyId: Number
     },
     computed: {
-        bots(): BotState {
+        bots(): State<BotT> {
             return this.$store.state.bots;
         }
     },

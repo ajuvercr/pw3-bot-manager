@@ -23,9 +23,9 @@
             </button>
         </div>
         <br>
-        <!-- <li class="instances" v-for="instance in lobby.instances" v-bind:key=instance.id>
-            <BotInstance :lobbyId="lobby.id" :bot="instance"/>
-        </li> -->
+        <li class="instances" v-for="player in players" v-bind:key=player.id>
+            <Player :lobbyId="lobby.id" :player="player"/>
+        </li>
     </ul>
 </template>
 
@@ -52,14 +52,13 @@
 <script lang="ts">
 import axios from "redaxios";
 import LobbyCreate from './Create.vue'
-import { LobbyT } from '@/store';
 import errorHandler from '../../error';
-import BotInstance from './BotInstance.vue';
-import { BotState } from '@/store/bots';
+import Player from './Player.vue';
+import { State, BotT, LobbyT, PlayerT } from '@/store';
 
 export default {
     name: "Lobby",
-    components: { LobbyCreate, BotInstance },
+    components: { LobbyCreate, Player },
     props: { lobby: Object as () => LobbyT },
     data() {
         return {
@@ -70,8 +69,12 @@ export default {
         };
     },
     computed: {
-      bots(): BotState {
+      bots(): State<BotT> {
           return this.$store.state.bots;
+      },
+      players(): PlayerT[] {
+          const allPlayers: PlayerT[] = Object.values(this.$store.state.players);
+          return allPlayers.filter(p => p.lobbyId === this.lobby?.id);
       }
     },
     methods: {
@@ -82,7 +85,18 @@ export default {
             }).catch(errorHandler);
         },
         botInstanceCreate() {
-            console.log("Creating new bot instance")
+            console.log("Creating new bot instance");
+            const data = {
+                token: this.newinstance.token,
+                botId: parseInt(this.newinstance.botId),
+                lobbyId: this.lobby?.id,
+                autoAccept: false,
+                startClient: false
+            };
+
+            axios.post(`/api/players`, data).then((response) => {
+                this.$store.commit('players/add', response.data);
+            }).catch(errorHandler);
         },
         buttonDisabled() {
             const validBot = !!this.newinstance.botId;

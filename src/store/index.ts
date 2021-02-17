@@ -44,10 +44,20 @@ export type ErrorT = {
     show: boolean,
 };
 
+export type PlayerT = {
+    token: string,
+    botId: number,
+    lobbyId: number,
+    autoAccept: boolean,
+    startClient: boolean,
+    id: number,
+};
+
 
 export type RootState = {
     bots: State<BotT>,
     lobbies: State<LobbyT>,
+    players: State<PlayerT>,
     errors: State<ErrorT>,
 }
 
@@ -55,6 +65,7 @@ export const store = createStore<RootState>({
     modules: {
         bots: moduleFactory<BotT>(),
         lobbies: moduleFactory<LobbyT>(),
+        players: moduleFactory<PlayerT>(),
         errors: moduleFactory<ErrorT>()
     }
 })

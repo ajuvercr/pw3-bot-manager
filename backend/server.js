@@ -42,11 +42,12 @@ const botValidator = {
 };
 
 const playerValidator = {
-    token: validate.string(),
-    botId: validate.number(),   // TODO add custom validator to see if bot is valid bot
-    lobbyId: validate.number(),
-    autoAccept: validate.boolean(),
-    startClient: validate.boolean()
+    "token": validate.string(),
+    "botId": validate.number(),   // TODO add custom validator to see if bot is valid bot
+    "lobbyId": validate.number(),
+    "autoAccept": validate.boolean(),
+    "startClient": validate.boolean(),
+    "id": validate.number()
 };
 
 const lobbyValidator = {
