@@ -3,24 +3,27 @@ import { store } from "./store";
 var errorCounter = 0;
 
 async function handle_error(resp: any) {
+    const id = errorCounter ++;
     if(typeof resp.data === 'object') {
         const msg = `${resp.statusText}: ${resp.data.join("\n")}`;
-        store.commit('addError', {
+        store.commit('errors/add', {
             status: resp.status,
             msg,
-            id: errorCounter ++,
+            id,
+            show: true,
         });
     } else {
-        store.commit('addError', {
+        store.commit('errors/add', {
             status: resp.status,
             msg: resp.statusText,
-            id: errorCounter ++,
+            id,
+            show: true,
         });
     }
     setTimeout(
         () => {
             console.log("Popping error")
-            store.commit('popError');
+            store.commit('errors/update', { show: false, id });
         },
         2000
     );

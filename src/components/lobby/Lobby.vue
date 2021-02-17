@@ -23,9 +23,9 @@
             </button>
         </div>
         <br>
-        <li class="instances" v-for="instance in lobby.instances" v-bind:key=instance.id>
+        <!-- <li class="instances" v-for="instance in lobby.instances" v-bind:key=instance.id>
             <BotInstance :lobbyId="lobby.id" :bot="instance"/>
-        </li>
+        </li> -->
     </ul>
 </template>
 
@@ -52,7 +52,7 @@
 <script lang="ts">
 import axios from "redaxios";
 import LobbyCreate from './Create.vue'
-import { Lobby } from '@/store/lobbies';
+import { LobbyT } from '@/store';
 import errorHandler from '../../error';
 import BotInstance from './BotInstance.vue';
 import { BotState } from '@/store/bots';
@@ -60,7 +60,7 @@ import { BotState } from '@/store/bots';
 export default {
     name: "Lobby",
     components: { LobbyCreate, BotInstance },
-    props: { lobby: Object as () => Lobby },
+    props: { lobby: Object as () => LobbyT },
     data() {
         return {
             newinstance: {
@@ -78,7 +78,7 @@ export default {
         deleteLobby() {
             axios.delete(`/api/lobbies/${this.lobby?.id}`).then((response) => {
                 // Update bots
-                this.$store.commit('removeLobby', this.lobby?.id);
+                this.$store.commit('lobbies/remove', this.lobby?.id);
             }).catch(errorHandler);
         },
         botInstanceCreate() {

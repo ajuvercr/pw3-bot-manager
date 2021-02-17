@@ -38,7 +38,7 @@ export default {
 
             axios.post(`/api/lobbies`, data).then((response) => {
                 // Update bots
-                this.$store.commit('addLobby', response.data);
+                this.$store.commit('lobbies/add', response.data);
 
                 this.token = "";
             }).catch(errorHandler);

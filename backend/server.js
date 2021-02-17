@@ -17,6 +17,12 @@ const state = {
             "length": 0,
             "data": {}
         }
+    },
+    "players": {
+        "inner": {
+            "length": 0,
+            "data": {}
+        }
     }
 };
 
@@ -32,20 +38,20 @@ function bot_already_exists(bot) {
 const botValidator = {
     "arguments": validate.array(validate.string()),
     "name": validate.and(validate.string(), validate.custom(bot_already_exists)),
-    "id": validate.number(),
+    "id": validate.number()
 };
 
-const botInstanceValidator = {
+const playerValidator = {
     token: validate.string(),
     botId: validate.number(),   // TODO add custom validator to see if bot is valid bot
+    lobbyId: validate.number(),
     autoAccept: validate.boolean(),
-    startClient: validate.boolean(),
+    startClient: validate.boolean()
 };
 
 const lobbyValidator = {
     "id": validate.number(),
-    "token": validate.and(validate.string(), validate.hex(64)),
-    "instances": validate.array(botInstanceValidator)
+    "token": validate.and(validate.string(), validate.hex(64))
 };
 
 async function load_or_save_default(file, def={}) {
@@ -120,6 +126,7 @@ app.get("/", (req, res) => {
 (async function() {
     await setup_crud(app, '/bots', 'store/bots.json', state.bots, botValidator);
     await setup_crud(app, '/lobbies', 'store/lobbies.json', state.lobbies, lobbyValidator);
+    await setup_crud(app, '/players', 'store/players.json', state.players, playerValidator);
     app.listen(port, () => {
         console.log(`>> Bot manager backend launched at port ${port}!`)
     });

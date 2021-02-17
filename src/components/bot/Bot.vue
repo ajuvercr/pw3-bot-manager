@@ -34,12 +34,12 @@
 
 <script lang="ts">
 import axios from "redaxios";
-import { Bot } from '../../store/bots'
+import { BotT } from '../../store'
 import errorHandler from '../../error';
 
 export default {
     name: "Bots",
-    props: { bot: Object as () => Bot },
+    props: { bot: Object as () => BotT },
     methods: {
         botArgs() {
             // Surround part with quotes if it contains spaces
@@ -49,7 +49,7 @@ export default {
         deleteBot(id: number) {
             axios.delete(`/api/bots/${this.bot?.id}`).then((response) => {
                 // Update bots
-                this.$store.commit('removeBot', this.bot?.id);
+                this.$store.commit('bots/remove', this.bot?.id);
             }).catch(errorHandler);
         }
     }

@@ -38,8 +38,8 @@ export default {
     axios.get("/api/fakeurl").catch(errorHandler);
     axios.post("/api/bots", {name: "test"}).catch(errorHandler);
 
-    axios.get(`/api/bots`).then(resp => this.$store.commit('setBots', resp.data));
-    axios.get(`/api/lobbies`).then(resp => this.$store.commit('setLobbies', resp.data));
+    axios.get(`/api/bots`).then(resp => this.$store.commit('bots/set', resp.data));
+    axios.get(`/api/lobbies`).then(resp => this.$store.commit('lobbies/set', resp.data));
   }
 }
 </script>

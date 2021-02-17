@@ -49,7 +49,7 @@ export default {
 
             axios.post(`/api/bots`, data).then((response) => {
                 // Update bots
-                this.$store.commit('addBot', response.data);
+                this.$store.commit('bots/add', response.data);
 
                 this.args = "";
                 this.name = "";

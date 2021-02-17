@@ -32,14 +32,13 @@ ul {
 <script lang="ts">
 import BotsCreate from './Create.vue'
 import Bot from './Bot.vue'
-import { BotState } from '../../store/bots'
+import { State, BotT } from '../../store'
 
 export default {
     name: "BotPage",
     components: { BotsCreate, Bot },
     computed: {
-        bots(): BotState {
-            console.log("Runnning computed bots")
+        bots(): State<BotT> {
             return this.$store.state.bots;
         }
     }

@@ -3,7 +3,7 @@
         <ul class="list-errors">
             <li class="error" v-for="error in errors" v-bind:key=error.id>
                 <transition name="slide-fade">
-                    <p v-if="error.id >= index"><span>{{error.status}}</span> {{error.msg}}</p>
+                    <p v-if="error.show"><span>{{error.status}}</span> {{error.msg}}</p>
                 </transition>
 
             </li>
@@ -41,16 +41,12 @@ ul {
 </style>
 
 <script lang="ts">
-import { Error } from '../store/errors';
-
+import { ErrorT, State } from '../store';
 export default {
     name: "Errors",
     computed: {
-        errors(): Error[] {
-            return this.$store.state.errors.errors;
-        },
-        index(): number {
-            return this.$store.state.errors.index;
+        errors(): State<ErrorT> {
+            return this.$store.state.errors;
         }
     }
 }

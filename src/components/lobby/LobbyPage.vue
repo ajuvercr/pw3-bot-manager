@@ -31,14 +31,14 @@ ul {
 
 <script lang="ts">
 import LobbyCreate from './Create.vue'
-import { LobbyState } from '@/store/lobbies';
+import { State, LobbyT } from '@/store';
 import Lobby from './Lobby.vue';
 
 export default {
     name: "LobbyPage",
     components: { LobbyCreate, Lobby },
     computed: {
-        lobbies(): LobbyState {
+        lobbies(): State<LobbyT> {
             return this.$store.state.lobbies;
         }
     }
