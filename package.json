@@ -2,7 +2,7 @@
   "name": "pw-frontend",
   "version": "0.0.0",
   "scripts": {
-    "dev": "concurrently \"vite\" \"cd backend && npm start\"",
+    "dev": "concurrently \"vite\" \"cd backend\"",
     "build": "vite build"
   },
   "dependencies": {
