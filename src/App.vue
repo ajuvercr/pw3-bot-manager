@@ -8,19 +8,145 @@
   </div>
 </template>
 
-<style scoped>
+<style>
 .main {
   width: 99vw;
-  height: 99vh;
   position: relative;
+  /* overflow-x: hidden; */
+  max-width: 1200px;
+  margin: auto;
+  margin-top: 100px;
+
+  font-family: "typewriter", monospace;
 }
 
 .content {
-  width: 99%;
-  max-width: 1000px;
-  justify-content: space-between;
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(min-content, 30%) auto;
+  column-gap: 10px;
+  grid-auto-flow: row;
 }
+
+.status-icon {
+  width: 1em;
+}
+.name {
+    position: relative;
+}
+.name .delButton {
+    position: absolute;
+    top: 50%;
+    left: -1.1em;
+    transform: translateY(-50%);
+}
+
+.name .delButton :hover {
+    color: orange;
+    cursor: pointer;
+}
+
+.list {
+  padding: 0;
+}
+
+.item + .item {
+  padding-top: 50px;
+}
+
+ul {
+    list-style-type: none;
+}
+
+.form {
+  border: #3c5a86 5px solid;
+  padding: 0.5em;
+}
+
+.small {
+  border: #3c5a86 3px solid;
+  padding: 0.2em;
+
+  max-width: 500px;
+  /* margin: auto; */
+}
+
+.form .title {
+   width:100%;
+   text-align:center;
+   position: relative;
+}
+
+.form h2 {
+  font : 1em "typewriter", monospace;
+  margin: -1.2em 0 0 0;
+
+  font-weight: bold;
+  position: absolute;
+
+  display: inline-block;
+  background-color: white;
+
+  padding: 0 5px;
+  transform: translateX(-50%);
+
+  width: fit-content;
+}
+
+.small h2 {
+  font-size: 0.8em;
+  margin: -1em 0 0 0;
+}
+
+
+.form input {
+  font    : 1.4em/1.5em "handwriting", cursive, sans-serif;
+  border  : none;
+  margin  : 0;
+  width   : 100%;
+  background : none;
+}
+
+.small input {
+  font-size: 1.1em;
+}
+
+.form input:focus {
+  background   : rgba(0,0,0,.1);
+  border-radius: 5px;
+}
+
+.form-item + .form-item {
+  margin-top: 10px!important;
+}
+
+button {
+  width        : 150px;
+  padding      : 5px;
+  font         : bold .8em sans-serif;
+  border       : 2px solid #333;
+  border-radius: 5px;
+  background   : none;
+  cursor       : pointer;
+  transform    : rotate(-1.2deg);
+}
+
+.small button {
+  font-size: 0.7em;
+  width: 100px;
+}
+
+.token {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  width: 160px;
+  height: 1.2em;
+  white-space: nowrap;
+}
+
+h3 {
+  display: inline;
+}
+
 </style>
 
 <script lang="ts">

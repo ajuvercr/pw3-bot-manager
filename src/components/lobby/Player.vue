@@ -1,40 +1,33 @@
 <template>
     <div>
-        Bot: "{{bots[player.botId+'']?.name}}"
-        <div>
-            <label for="startbox">Start client</label>
-            <input type="checkbox" id="startbox" v-model="player.startClient">
+        <p class="name form-item">
+            Bot: "{{bots[player.botId+'']?.name}}"
+            <div class="delButton">
+                <fa-icon v-on:click="deletePlayer()" icon="times" class="status-icon"/>
+            </div>
+        </p>
+        <div class="checks form-item">
+            <div>
+                <input type="checkbox" :id="start_client" v-model="player.startClient">
+                <label :for="start_client">start client</label>
+            </div>
+            <div>
+                <input type="checkbox" :id="auto_accept" v-model="player.autoAccept">
+                <label :for="auto_accept">auto accept</label>
+            </div>
         </div>
-        <div>
-            <label for="autoacceptbox">Auto Accept</label>
-            <input type="checkbox" id="autoacceptbox" v-model="player.autoAccept">
-        </div>
-        <div> Token: "{{player.token}}" </div>
-        <button v-on:click="save()">Save</button>
+        <div class="form-item"> Token: "{{player.token}}" </div>
+        <button class="form-item" v-on:click="save()">Save</button>
     </div>
 </template>
 
 <style scoped>
-.status-icon {
-  width: 1em;
-}
-.name {
-    position: relative;
-}
-.name .delButton {
-    position: absolute;
-    top: 50%;
-    left: -1.1em;
-    transform: translateY(-50%);
-}
-
-.name .delButton :hover {
-    color: orange;
-    cursor: pointer;
-}
-
 .command {
     font-weight: bolder;
+}
+.checks {
+    display: flex;
+    gap: 50px;
 }
 </style>
 
@@ -52,6 +45,12 @@ export default {
     computed: {
         bots(): State<BotT> {
             return this.$store.state.bots;
+        },
+        auto_accept(): string {
+            return this.lobbyId + "auto_accept"+this.player?.id;
+        },
+        start_client(): string {
+            return this.lobbyId + "start_client"+ this.player?.id;
         }
     },
     methods: {
@@ -59,6 +58,12 @@ export default {
         },
         save() {
             console.log("Saving")
+        },
+        deletePlayer() {
+            axios.delete(`/api/players/${this.player?.id}`).then((response) => {
+                // Update bots
+                this.$store.commit('players/remove', this.player?.id);
+            }).catch(errorHandler);
         }
     }
 }

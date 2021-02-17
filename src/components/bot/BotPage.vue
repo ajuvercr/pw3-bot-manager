@@ -1,9 +1,8 @@
 <template>
-    <div>
-        <h3>Bots</h3>
+    <div class="bots">
         <BotsCreate />
-        <ul class="list-bots">
-            <li class="bot" v-for="bot in bots" v-bind:key=bot.id>
+        <ul class="list">
+            <li class="item" v-for="bot in bots" v-bind:key=bot.id>
                 <Bot :bot="bot"/>
             </li>
         </ul>
@@ -12,20 +11,12 @@
 </template>
 
 <style scoped>
-h3 {
-    padding-left: 10px;
+.bots {
+    width: 300px;
 }
-ul {
-    list-style-type: none;
-}
-.status-icon {
-  width: 1em;
-}
-.list-bots {
-    padding-left: 40px;
-}
-.bot + .bot {
-    padding-top: 15px;
+
+.item + .item {
+    padding-top: 20px;
 }
 </style>
 

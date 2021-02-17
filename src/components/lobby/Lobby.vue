@@ -1,51 +1,62 @@
 <template>
-    <p class="name">
-        Lobby: {{lobby?.token}}
+    <div class="name">
+        <h3>Lobby: </h3>
+        {{lobby?.token}}
         <div class="delButton">
             <fa-icon v-on:click="deleteLobby()" icon="times" class="status-icon"/>
         </div>
-    </p>
-    <ul class="list-instances">
-        <div>
-            <h3>Add bot instance</h3>
-            <select v-model="newinstance.botId">
-                <option value="" disabled>Select your bot</option>
-                <option v-for="bot in bots" v-bind:key=bot.id :value=bot.id>
-                    {{bot.name}}
-                </option>
-            </select>
-            <div>
-                <input type="text" v-model="newinstance.token" placeholder="Bot token" />
-                <button v-on:click="generateToken()">Generate token</button>
-            </div>
-            <button v-on:click="botInstanceCreate" :disabled="buttonDisabled()" class="join-button">
-                Add bot
-            </button>
+    </div>
+    <div class="form small">
+        <div class="title">
+            <h2>Add bot instance</h2>
         </div>
-        <br>
-        <li class="instances" v-for="player in players" v-bind:key=player.id>
+        <select class="form-item" v-model="newinstance.botId">
+            <option value="" disabled>Select your bot</option>
+            <option v-for="bot in bots" v-bind:key=bot.id :value=bot.id>
+                {{bot.name}}
+            </option>
+        </select>
+        <div class="form-item tokenfield">
+            <input type="text" v-model="newinstance.token" placeholder="Bot token" />
+            <button v-on:click="generateToken()">Generate token</button>
+        </div>
+        <button class="form-item" v-on:click="botInstanceCreate" :disabled="buttonDisabled()" class="join-button">
+            Add bot
+        </button>
+    </div>
+    <ul class="list players">
+        <li class="player" v-for="player in players" v-bind:key=player.id>
             <Player :lobbyId="lobby.id" :player="player"/>
         </li>
     </ul>
 </template>
 
 <style scoped>
-.status-icon {
-  width: 1em;
-}
-.name {
-    position: relative;
-}
-.name .delButton {
-    position: absolute;
-    top: 50%;
-    left: -1.1em;
-    transform: translateY(-50%);
+.tokenfield {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.name .delButton :hover {
-    color: orange;
-    cursor: pointer;
+.form input {
+    width: 75%;
+}
+
+.name {
+    padding: 20px;
+}
+
+.players {
+    display: grid;
+    column-gap: 60px;
+    row-gap: 40px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 40%));
+    /* justify-content: center; */
+}
+
+.player {
+    flex-grow: 1;
+    width: fit-content;
 }
 </style>
 

@@ -3,12 +3,17 @@
         <div class="delButton">
             <fa-icon v-on:click="deleteBot()" icon="times" class="status-icon"/>
         </div>
-        {{bot.name}}
+        <h3>
+            {{bot.name}}
+        </h3>
     </p>
     <p> Arguments: <span class="command">{{ botArgs() }}</span></p>
 </template>
 
 <style scoped>
+h3 {
+    margin: 5px 0;
+}
 .status-icon {
   width: 1em;
 }

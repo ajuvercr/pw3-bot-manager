@@ -1,15 +1,12 @@
 <template>
-<div class="container">
-  <div class="join-card">
-    <div>
-      <input type="text" v-model="token" placeholder="Enter lobby token"/>
-    </div>
-    <div>
-      <button v-on:click="create" :disabled="buttonDisabled()" class="join-button">
-        Create Lobby
-      </button>
-    </div>
+<div class="form">
+  <div class="title">
+    <h2> Create new lobby </h2>
   </div>
+  <input class="form-item" type="text" v-model="token" placeholder="Enter lobby token"/>
+  <button class="form-item" v-on:click="create" :disabled="buttonDisabled()">
+    Create Lobby
+  </button>
 </div>
 </template>
 

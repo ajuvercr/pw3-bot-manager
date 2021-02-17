@@ -1,23 +1,20 @@
 <template>
-<div class="container">
-  <div class="join-card">
-    <div>
-      <input type="text" v-model="name" placeholder="Enter bot's name"/>
-    </div>
-    <div>
-      <input type="text" class="connect-input" v-model="args" placeholder="Enter bots command arguments" />
-    </div>
-    <div>
-      <button v-on:click="create" :disabled="buttonDisabled()" class="join-button">
-        Create Bot
-      </button>
-    </div>
+<div class="form">
+  <div class="title">
+    <h2> Create new bot </h2>
   </div>
+  <input class="form-item" type="text" v-model="name" placeholder="Enter bot's name"/>
+  <input class="form-item" type="text" class="connect-input" v-model="args" placeholder="Bot start command" />
+  <button class="form-item" v-on:click="create" :disabled="buttonDisabled()">
+    Create Bot
+  </button>
 </div>
 </template>
 
 <style scoped>
-
+/* button {
+    width: 40%;
+} */
 </style>
 
 <script lang="ts">
