@@ -11,10 +11,6 @@
 </template>
 
 <style scoped>
-.bots {
-    width: 300px;
-}
-
 .item + .item {
     padding-top: 20px;
 }

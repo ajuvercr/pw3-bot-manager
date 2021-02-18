@@ -1,8 +1,5 @@
 <template>
 <div class="form">
-  <div class="title">
-    <h2> Create new bot </h2>
-  </div>
   <input class="form-item" type="text" v-model="name" placeholder="Enter bot's name"/>
   <input class="form-item" type="text" v-model="args" placeholder="Bot start command" />
   <button class="form-item" v-on:click="create" :disabled="buttonDisabled()">

@@ -16,7 +16,7 @@
                 {{bot.name}}
             </option>
         </select>
-        <div class="form-item tokenfield">
+        <div class="form-item oneline">
             <input type="text" v-model="newinstance.token" placeholder="Bot token" />
             <button v-on:click="generateToken()">Generate token</button>
         </div>
@@ -24,7 +24,7 @@
             Add bot
         </button>
     </div>
-    <ul class="list players">
+    <ul class="players">
         <li class="player" v-for="player in players" v-bind:key=player.id>
             <Player :lobbyId="lobby.id" :player="player"/>
         </li>
@@ -32,31 +32,15 @@
 </template>
 
 <style scoped>
-.tokenfield {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.form input {
-    width: 75%;
-}
-
 .name {
     padding: 20px;
 }
-
 .players {
-    display: grid;
-    column-gap: 60px;
-    row-gap: 40px;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 40%));
-    /* justify-content: center; */
+    padding: 0;
 }
-
 .player {
-    flex-grow: 1;
-    width: fit-content;
+    width: 90%;
+    margin: auto;
 }
 </style>
 

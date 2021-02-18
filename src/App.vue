@@ -10,21 +10,15 @@
 
 <style>
 .main {
-  width: 99vw;
-  position: relative;
-  /* overflow-x: hidden; */
-  max-width: 1200px;
-  margin: auto;
-  margin-top: 100px;
-
   font-family: "typewriter", monospace;
 }
 
 .content {
-  display: grid;
-  grid-template-columns: minmax(min-content, 30%) auto;
-  column-gap: 10px;
-  grid-auto-flow: row;
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 20px;
 }
 
 .status-icon {
@@ -36,7 +30,7 @@
 .name .delButton {
     position: absolute;
     top: 50%;
-    left: -1.1em;
+    right: 5px;
     transform: translateY(-50%);
 }
 
@@ -66,7 +60,7 @@ ul {
   border: #3c5a86 3px solid;
   padding: 0.2em;
 
-  max-width: 500px;
+  /* max-width: 500px; */
   /* margin: auto; */
 }
 
@@ -92,14 +86,20 @@ ul {
   width: fit-content;
 }
 
+.oneline {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
 .small h2 {
   font-size: 0.8em;
   margin: -1em 0 0 0;
 }
 
 
-.form input {
-  font    : 1.4em/1.5em "handwriting", cursive, sans-serif;
+.form input, .form select {
+  font    : 1.4em/1.5em "typewriter", sans-serif;
   border  : none;
   margin  : 0;
   width   : 100%;
@@ -147,7 +147,6 @@ button[disabled]{
 
 .small button {
   font-size: 0.7em;
-  width: 100px;
 }
 
 .token {

@@ -11,27 +11,6 @@
 </template>
 
 <style scoped>
-h3 {
-    margin: 5px 0;
-}
-.status-icon {
-  width: 1em;
-}
-.name {
-    position: relative;
-}
-.name .delButton {
-    position: absolute;
-    top: 50%;
-    left: -1.1em;
-    transform: translateY(-50%);
-}
-
-.name .delButton :hover {
-    color: orange;
-    cursor: pointer;
-}
-
 .command {
     font-weight: bolder;
 }
