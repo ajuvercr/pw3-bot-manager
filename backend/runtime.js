@@ -1,20 +1,12 @@
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
-function setupWS(url, bot) {
+function setupWS(url) {
     return new Promise(resolve => {
-        console.log("Trying ws at "+url);
         const socket = new WebSocket(url);
 
         socket.onopen = (ev) => {
             console.log('ws connected')
             resolve(socket);
-        }
-
-        socket.onmessage = (ev) => {
-            const event = JSON.parse(ev.data);
-            if(event.type === "proposalData") {
-                bot.handle_proposal(event.data);
-            }
         }
     })
 }
@@ -25,9 +17,10 @@ const WebSocket = require('ws');
 const settings = {};
 
 
-module.exports.init = function(http_server, ws_server){
+module.exports.init = function(http_server, ws_server, bot_ws_server){
     settings.http_server = http_server;
     settings.ws_server = ws_server;
+    settings.bot_ws_server = bot_ws_server;
 }
 
 class BotAcceptor {
@@ -45,7 +38,14 @@ class BotAcceptor {
     async setup() {
         const lobbies = await axios.get(`${settings.http_server}/lobbies/${this.lobbyToken}`).then(resp => resp.data);
 
-        this.socket = await setupWS(settings.ws_server, this);
+        this.socket = await setupWS(settings.ws_server);
+
+        this.socket.onmessage = (ev) => {
+            const event = JSON.parse(ev.data);
+            if(event.type === "proposalData") {
+                this.handle_proposal(event.data);
+            }
+        }
 
         const playerParams = {
             "token": this.botToken,
@@ -89,6 +89,7 @@ class BotAcceptor {
     }
 }
 
+
 const auto_accept_bots = {};
 
 module.exports.set_auto_accept = function(auto_accept, name, lobbyToken, botToken) {
@@ -103,6 +104,133 @@ module.exports.set_auto_accept = function(auto_accept, name, lobbyToken, botToke
     }
 
     if (!auto_accept && !!lobby[botToken]) {
+        console.log("Closing")
+        lobby[botToken].close();
+        delete lobby[botToken];
+    }
+}
+
+
+
+
+
+const { encode, decode } = require('@msgpack/msgpack');
+const { spawn } = require('child_process');
+
+class BotRunner {
+    constructor(send_f, argv) {
+        this.send_f = send_f;
+
+        this.bot = spawn(argv[0], argv.slice(1));
+
+        this.bot.stdout.on('data', this.handle_bot_data.bind(this));
+        this.bot.stderr.on('data', (data) => console.error(`Bot stderr: ${data}`));
+    }
+
+    handle_bot_data(bot_data) {
+        // This shouldn't be wrapped in PlayerResponse for some fucking reason
+        const data = {
+            "content": Array.from(bot_data),
+            "request_id": this.request_id
+        };
+
+        this.send_f(Array.from(encode(data)));
+    }
+
+    handle_data(data) {
+        const msg = decode(Uint8Array.from(data));
+
+        if(msg["0"]) {
+            this.request_id = msg["0"][0];
+            const content = msg["0"][1];
+
+            this.bot.stdin.write(Uint8Array.from(content));
+            this.bot.stdin.write("\r\n");
+        }
+
+        if(msg["1"]) {
+            console.log("INFO", msg["1"])
+        }
+    }
+
+    close() {
+        if(this.bot) {
+            this.bot.kill('SIGINT');
+        }
+    }
+}
+
+
+class PlayerRunner {
+    constructor(token, argv) {
+        this.token = token;
+        this.argv = argv;
+
+        this.bots = {};
+    }
+
+    async setup() {
+        this.socket = await setupWS(settings.bot_ws_server);
+
+        //
+        const identify = {
+            "IdentifyClient":{
+                "client_token": this.token.match(/([0-9abcdef]){2}/gi).map(t => parseInt(t, 16))
+            }
+        };
+        this.socket.send(encode(identify), { binary: true });
+
+        this.socket.onmessage = (ev) => {
+            const event = decode(ev.data);
+            if(event['0']) {    // ServerMessage::RunPlayer
+                const player_token = event['0'][0];
+                const sendMsg = (msg) =>  {
+                    const data = {
+                        "PlayerMessage": {
+                            "player_token": player_token,
+                            "data": msg,
+                        }
+                    };
+                    this.socket.send(encode(data), { binary: true })
+                };
+
+                this.bots[player_token] = new BotRunner(sendMsg, this.argv);
+
+                const data = {
+                    "ConnectPlayer": {
+                        "player_token": player_token
+                    }
+                };
+
+                this.socket.send(encode(data), { binary: true })
+            }
+
+            if (event['1']) {
+                const player_token = event['1'][0];
+                const data = event['1'][1];
+                this.bots[player_token].handle_data(data);
+            }
+        }
+    }
+}
+
+module.exports.PlayerRunner = PlayerRunner;
+
+
+const start_bots = {};
+
+module.exports.set_start_bot = function(start, botToken, argv, lobbyToken) {
+    console.log(`Setting ${start} ${lobbyToken} ${botToken}`);
+
+    start_bots[lobbyToken] = start_bots[lobbyToken] || {};
+    const lobby = start_bots[lobbyToken];
+
+    if (start && !lobby[botToken]) {
+        lobby[botToken] = new PlayerRunner(botToken, argv);
+        lobby[botToken].setup();
+    }
+
+    if (!start && !!lobby[botToken]) {
         console.log("Closing")
         lobby[botToken].close();
         delete lobby[botToken];

@@ -186,7 +186,10 @@ const check_auto_accept = function(_, bot) {
     console.log(state);
     const lobbyId = state.lobbies.inner.data[bot.lobbyId].token;
     const name = state.bots.inner.data[bot.botId].name;
+    const argv = state.bots.inner.data[bot.botId].arguments;
     runtime.set_auto_accept(bot.autoAccept, name, lobbyId, bot.token);
+
+    runtime.set_start_bot(bot.startClient, bot.token, argv, lobbyId);
 }
 const hooks = {
     "post": check_auto_accept,
@@ -197,7 +200,7 @@ if(process.argv.length < 4) {
     console.error(`Please use as ${process.argv[0]} ${process.argv[1]} <http_server> <ws_server>`);
     process.exit(1);
 }
-runtime.init(process.argv[2], process.argv[3]);
+runtime.init(process.argv[2], process.argv[3], "ws://localhost:8080");
 
 
 (async function() {
@@ -207,4 +210,5 @@ runtime.init(process.argv[2], process.argv[3]);
     app.listen(port, () => {
         console.log(`>> Bot manager backend launched at port ${port}!`)
     });
+
 })();
