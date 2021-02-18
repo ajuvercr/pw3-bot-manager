@@ -197,10 +197,13 @@ const hooks = {
 };
 
 if(process.argv.length < 4) {
-    console.error(`Please use as ${process.argv[0]} ${process.argv[1]} <http_server> <ws_server>`);
+    console.error(`Please use as ${process.argv[0]} ${process.argv[1]} <web_server> <bot_server>`);
+    console.error(`Like ${process.argv[0]} ${process.argv[1]} localhost:3000 localhost:8080`);
+
     process.exit(1);
 }
-runtime.init(process.argv[2], process.argv[3], "ws://localhost:8080");
+
+runtime.init("http://"+process.argv[2]+"/api", "ws://" + process.argv[2] +"/websocket", "ws://"+process.argv[3]);
 
 
 (async function() {
