@@ -1,35 +1,35 @@
 # pw3-bot-manager
 
-This is intended to work together with [pw3-moz2](https://github.com/iasoon/pw3-moz2).
-
 
 ## Setup
 
 ```
+cd frontend
 npm install
-cd backend
+cd ../backend
 npm install
 ```
+
 
 ## Start
 
-### Start backend
-```
-cd pw3-moz2
-cargo run --bin server
-```
-
 ### Start frontend
+
 ```
 cd pw3-frontend
-npm run dev         # after npm install ofcourse
+npm run dev
 ```
 
-### Start client backend with addresses of previous started serversss
+
+### Start client backend with addresses of previous started servers
+
+For local development also start [pw3-moz2](https://github.com/iasoon/pw3-moz2). Http server is localhost:3000, bot server is localhost:8080.
+
 ```
 cd backend
-npm run localhost:3000 localhost:8080
+npm run <http_server> <bot_server>
 ```
+
 
 ### Start client frontend
 ```
